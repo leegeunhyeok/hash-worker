@@ -1,5 +1,5 @@
 const db = new BoxDB('hash-worker', 1);
-const CompletedHash = db.box(
+const CompletedHash = db.create(
   'completed_hash',
   {
     hash: BoxDB.Types.STRING,
