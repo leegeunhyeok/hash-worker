@@ -6,6 +6,9 @@ self.name = 'window';
 $(function () {
   let workerCount = 0;
   let spawnedWorker = null;
+  let latestDate = 0;
+  let averagePerSecond = 0;
+  let resultCountInTask = 0;
 
   if (!isWorkerSupport) {
     alert('!! Your browser not support Web Worker !!');
@@ -16,7 +19,17 @@ $(function () {
     const worker = new Worker('/worker.js', { name: 'worker-' + ++workerCount });
     worker.addEventListener('message', (event) => {
       console.log('Window :: From worker -', event.data);
-      if (event.data === 'UPDATE') renderRecentHistory();
+      if (event.data === 'UPDATE') {
+        renderRecentHistory();
+        resultCountInTask++;
+        const currentDateTime = new Date();
+
+        if (latestDate !== 0) {
+          averagePerSecond += (currentDateTime - latestDate);
+          $('#per_second').text(parseInt(averagePerSecond / resultCountInTask));
+        }
+        latestDate = currentDateTime;
+      }
     });
     return worker;
   };
@@ -26,7 +39,7 @@ $(function () {
     spawnedWorker = null;
   };
 
-  renderRecentHistory = () => {
+  const renderRecentHistory = () => {
     if (!db.ready) alert('Database not ready');
 
     CompletedHash.count().then((total) => $('#total').text(total));
@@ -58,6 +71,9 @@ $(function () {
 
   $('#start').click(() => {
     console.log('Window :: Button start');
+    latestDate = 0;
+    averagePerSecond = 0;
+    resultCountInTask = 0;
     kill();
     spawnedWorker = spawnWorker();
     spawnedWorker.postMessage({ action: 'INIT', data: $('#hash_starts_with').val() || '0000' });

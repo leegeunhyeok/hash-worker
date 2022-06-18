@@ -118,3 +118,17 @@ button:disabled {
   border: 1px solid #aaa;
   cursor: not-allowed;
 }
+
+.information {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px;
+  border-radius: 50px;
+  background-color: #fff;
+  box-shadow: 0 0 4px rgba(0, 0, 0, .3);
+}
+.information::after {
+  content: ' res/ms';
+}
