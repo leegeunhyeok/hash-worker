@@ -62,13 +62,13 @@ $(function () {
     spawnedWorker = spawnWorker();
     spawnedWorker.postMessage({ action: 'INIT', data: $('#hash_starts_with').val() || '0000' });
     spawnedWorker.postMessage({ action: 'RUN' });
-    $('#running').show();
+    $('#running').removeClass().addClass('run');
   });
 
   $('#stop').click(() => {
     console.log('Window :: Button stop');
     kill();
-    $('#running').hide();
+    $('#running').removeClass().addClass('idle');
   });
 
   $('#clear').click(() => {
@@ -82,6 +82,6 @@ $(function () {
     if (!db.ready) return;
     clearInterval(loop);
     renderRecentHistory();
-    $('#loading').hide();
+    $('#running').removeClass().addClass('idle');
   }, 100);
 });
